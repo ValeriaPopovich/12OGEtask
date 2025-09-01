@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+  <title>12 задание ОГЭ. Расчёты по формулам</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --rose:#F9E5EC; --peach:#FFDDB8; --mint:#CFF5E7; --beige:#FFF6E9;
+      --accent:#FF9EB2; --accent-2:#8DE6D1; --ink:#8A3A52;
+      --shadow:0 10px 28px rgba(218,114,146,.18); --radius:22px;
+      --ok:#3CB371; --bad:#E05666;
+    }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{
+      margin:0; color:var(--ink);
+      font-family:"Nunito", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 0% 0%, var(--rose), transparent 70%),
+        radial-gradient(1000px 600px at 100% 0%, var(--mint), transparent 65%),
+        radial-gradient(900px 600px at 100% 100%, var(--peach), transparent 65%),
+        var(--beige);
+    }
+    .wrap{max-width:1000px; margin-inline:auto; padding:clamp(14px,3.2vw,28px); display:grid; gap:16px}
+    header{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap}
+    .title{font-family:"Poppins",sans-serif;font-weight:800;letter-spacing:.3px;font-size:clamp(20px,3.2vw,32px)}
+    .sub-btn{
+      background:linear-gradient(135deg,#FFDDB8,#FF9EB2);
+      color:#7a243a; font-weight:800; padding:10px 18px; border-radius:14px;
+      text-decoration:none; box-shadow:var(--shadow); transition:.1s ease transform;
+    }
+    .sub-btn:hover{transform:scale(1.05)}
+    .panel{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:clamp(14px,3vw,22px);display:grid;gap:14px}
+    .topbar{display:grid;gap:10px;grid-template-columns:1fr auto;align-items:center}
+    .progress{height:14px;background:rgba(255,158,178,.25);border-radius:999px;overflow:hidden}
+    .progress>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#FFBFD0);transition:width .5s ease}
+    .hearts{font-size:1.6rem}.hearts span{margin-left:4px}.hearts .off{opacity:.25}
+    .q-title{font-weight:800;font-size:clamp(18px,2.8vw,26px)}
+    .q-body{font-size:clamp(15px,1.9vw,18px);line-height:1.55;white-space:pre-wrap}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .btn{background:linear-gradient(135deg,var(--mint),var(--accent-2));color:#255a52;font-weight:800;border:none;padding:12px 16px;border-radius:14px;cursor:pointer;transition:.06s transform,.2s filter;box-shadow:var(--shadow);font-size:clamp(14px,1.9vw,16px)}
+    .btn:active{transform:translateY(1px) scale(.98)}
+    .btn.secondary{background:linear-gradient(135deg,#FFE6C9,#FFD3A3);color:#7a4429}
+    .choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+    .chip{background:#fff;border:2px solid transparent;border-radius:14px;padding:12px;text-align:center;cursor:pointer;font-weight:800;box-shadow:var(--shadow);transition:.2s ease;user-select:none}
+    .chip:hover{transform:translateY(-1px)} .chip.sel{border-color:var(--accent);background:linear-gradient(#fff,#FFEFF4)}
+    input[type="text"],.display{width:100%;font-size:clamp(16px,2.2vw,20px);padding:12px 14px;border-radius:14px;border:2px solid rgba(138,58,82,.15);outline:none;background:#fff;color:var(--ink);box-shadow:var(--shadow)}
+    .display{font-weight:800;text-align:right;letter-spacing:.5px}
+    .slider-wrap{display:grid;gap:10px} input[type="range"]{width:100%}
+    .kpd{display:grid;grid-template-columns:repeat(3,minmax(64px,1fr));gap:8px}
+    .kbtn{background:#fff;border-radius:14px;padding:14px;text-align:center;font-weight:800;box-shadow:var(--shadow);cursor:pointer;user-select:none}
+    .drag-area{display:grid;gap:12px}
+    .tiles{display:flex;flex-wrap:wrap;gap:10px}
+    .tile{padding:10px 14px;background:#fff;border-radius:14px;box-shadow:var(--shadow);font-weight:800;cursor:grab;user-select:none}
+    .drop{border:2px dashed rgba(138,58,82,.35);min-height:56px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:rgba(255,255,255,.8)}
+    .hint{background:#fff6;border-left:6px solid var(--accent);padding:12px;border-radius:12px;display:none}
+    .toast{position:fixed;inset:20px auto auto 50%;transform:translateX(-50%) translateY(-10px);background:#fff;padding:10px 14px;border-radius:12px;color:#8A3A52;font-weight:800;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s ease;z-index:50}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .card.ok{animation:pulse .6s} .card.bad{animation:shake .35s}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(60,179,113,.5)}100%{box-shadow:0 0 0 18px rgba(60,179,113,0)}}
+    @keyframes shake{10%,90%{transform:translateX(-1px)}20%,80%{transform:translateX(2px)}30%,50%,70%{transform:translateX(-4px)}40%,60%{transform:translateX(4px)}}
+    .confetti{position:fixed;top:-10px;width:10px;height:14px;opacity:.95;transform:rotate(15deg);border-radius:3px;z-index:60;animation:fall 1.6s linear forwards}
+    @keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:1}}
+    .overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(255,245,247,.85);z-index:40;backdrop-filter:blur(4px);padding:20px}
+    .hidden{display:none}
+    .footer{text-align:center;opacity:.7;font-size:.9rem}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="title">📘 12 задание ОГЭ. Расчёты по формулам</div>
+    <a class="sub-btn" href="https://t.me/YourChannelHere" target="_blank" rel="noopener">Подписывайся 📲</a>
+  </header>
+
+  <section class="panel">
+    <div class="topbar">
+      <div class="progress" aria-label="Прогресс"><i id="bar"></i></div>
+      <div class="hearts" aria-label="Жизни"><span id="h1">❤️</span><span id="h2">❤️</span><span id="h3">❤️</span></div>
+    </div>
+
+    <div class="card panel" id="card">
+      <div class="q-title" id="qTitle">Задание 1</div>
+      <div class="q-body" id="qBody"></div>
+      <div id="interactive"></div>
+      <div class="actions">
+        <button class="btn" id="checkBtn">Проверить</button>
+        <button class="btn secondary" id="hintBtn">Подсказка</button>
+      </div>
+      <div class="hint" id="hintBox"></div>
+      <div class="small" id="note"></div>
+    </div>
+  </section>
+
+  <div class="footer">Подсказки — простым школьным языком. Запятую можно вводить «,» или «.»</div>
+</div>
+
+<div class="toast" id="toast">Ура!</div>
+<div class="overlay hidden" id="gameOver">
+  <div class="panel" style="max-width:560px">
+    <div class="q-title">Игра окончена</div>
+    <div class="q-body" id="overText">Вы молодец!</div>
+    <div class="actions"><button class="btn" id="againBtn">Сыграть снова</button></div>
+  </div>
+</div>
+
+<script>
+  // ---------- helpers ----------
+  const $ = (s, p=document)=>p.querySelector(s);
+  const $$ = (s, p=document)=>[...p.querySelectorAll(s)];
+  const parseNum = v => parseFloat(String(v??'').replace(',', '.').replace(/\s/g,''));
+  const within = (x, target, tol=1e-3)=> Math.abs(parseNum(x) - target) <= tol;
+
+  const toast = (msg)=>{ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1200) }
+  const confetti=()=>{const c=["#FF9EB2","#FFDDB8","#CFF5E7","#B1E3FF","#E6C2FF"];for(let i=0;i<24;i++){const s=document.createElement('span');s.className='confetti';s.style.left=Math.random()*100+'vw';s.style.background=c[(Math.random()*c.length)|0];s.style.animationDuration=(1.2+Math.random()*0.8)+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),1800)}}
+
+  // ---------- tasks: оригинальные формулировки ----------
+  const tasks = [
+    {
+      id:1, type:'choice',
+      title:'Задание 1.',
+      body:'В фирме «Родник» стоимость (в рублях) колодца из железобетонных колец рассчитывается по формуле C = 6000 + 4100·n, где n – число колец, установленных при рытье колодца. Пользуясь этой формулой, рассчитайте стоимость колодца из 7 колец.',
+      options:[34700, 34100, 32000, 28700], answer:34700, unit:'₽',
+      hint:'Подставь n=7: 6000 + 4100·7 = 6000 + 28700 = 34700.'
+    },
+    {
+      id:2, type:'input',
+      title:'Задание 2.',
+      body:'Чтобы перевести значение температуры по шкале Цельсия в шкалу Фаренгейта, пользуются формулой t_F = 1,8 t_C + 32, где t_C – градусы Цельсия, t_F – градусы Фаренгейта. Скольким градусам по шкале Фаренгейта соответствует −45 градусов по шкале Цельсия?',
+      answer:-49, tol:0.2, placeholder:'Ответ в °F',
+      hint:'t_F = 1,8·(−45) + 32 = −81 + 32 = −49.'
+    },
+    {
+      id:3, type:'slider',
+      title:'Задание 3.',
+      body:'Чтобы перевести значение температуры по шкале Фаренгейта в шкалу Цельсия позволяет формула t_C = 5/9 (t_F − 32), где t_C – температура в градусах Цельсия, t_F – температура в градусах Фаренгейта. Скольким градусам по шкале Цельсия соответствует 113 градусов по шкале Фаренгейта?',
+      min:40, max:60, step:0.1, answer:45, tol:0.3, unit:'°C',
+      hint:'t_C = 5/9·(113 − 32) = 5/9·81 = 45.'
+    },
+    {
+      id:4, type:'drag',
+      title:'Задание 4.',
+      body:'Сила Архимеда, выталкивающая на поверхность погружённое в воду тело, вычисляется по формуле F = ρ g V, где ρ = 1000 кг/м^3 – плотность воды, g = 9,8 м/с^2 – ускорение свободного падения, а V – объём тела в кубических метрах. Сила F измеряется в ньютонах. Найдите силу Архимеда, действующую на погружённое в воду тело объёмом 0,6 куб. м. Ответ дайте в ньютонах.',
+      tiles:[5880, 980, 600, 1000], answer:5880,
+      hint:'F = 1000 · 9,8 · 0,6 = 5880 Н.'
+    },
+    {
+      id:5, type:'input',
+      title:'Задание 5.',
+      body:'Если тело массой m кг подвешено на высоте h м над горизонтальной поверхностью земли, то его потенциальная энергия в джоулях вычисляется по формуле P = mgh, g = 9,8 м/с^2 – ускорение свободного падения. Найдите массу тела, подвешенного на высоте 4 м над поверхностью земли, если его потенциальная энергия равна 1176 джоулям. Ответ дайте в килограммах.',
+      answer:30, tol:0.05, placeholder:'кг',
+      hint:'m = P/(gh) = 1176 / (9,8·4) = 30.'
+    },
+    {
+      id:6, type:'choice',
+      title:'Задание 6.',
+      body:'Энергия заряженного конденсатора W (в джоулях) вычисляется по формуле W = CU^2 / 2, где C – ёмкость конденсатора (в фарадах), а U – разность потенциалов на обкладках конденсатора (в вольтах). Найдите энергию конденсатора ёмкостью 10^-4 фарад, если разность потенциалов на обкладках конденсатора равна 22 вольт. Ответ дайте в джоулях.',
+      options:[0.0242, 0.242, 24.2, 0.00242], answer:0.0242, unit:'Дж',
+      hint:'0,5 · 10^-4 · 22^2 = 0,0242 Дж.'
+    },
+    {
+      id:7, type:'keypad',
+      title:'Задание 7.',
+      body:'Кинетическая энергия тела массой m кг, двигающегося со скоростью v м/с, вычисляется по формуле E = mv^2 / 2 и измеряется в джоулях (Дж). Известно, что автомобиль массой 2500 кг обладает кинетической энергией 45 тысяч джоулей. Найдите скорость этого автомобиля в метрах в секунду.',
+      answer:6, tol:0.01, unit:'м/с',
+      hint:'v = √(2E/m) = √(90000/2500) = √36 = 6 м/с.'
+    },
+    {
+      id:8, type:'stepper',
+      title:'Задание 8.',
+      body:'Мощность постоянного тока (в ваттах) вычисляется по формуле P = I^2 R, где I – сила тока (в амперах), R – сопротивление (в омах). Пользуясь этой формулой, найдите сопротивление R, если мощность составляет 101,25 Вт, а сила тока равна 4,5 А. Ответ дайте в омах.',
+      start:3.5, step:0.5, answer:5, tol:0.01, unit:'Ω',
+      hint:'R = P / I^2 = 101,25 / 4,5^2 = 5 Ом.'
+    },
+    {
+      id:9, type:'choice',
+      title:'Задание 9.',
+      body:'Центростремительное ускорение при движении по окружности (в м/с^2) можно вычислить по формуле a = ω^2 R, где ω – угловая скорость (в с^-1), а R – радиус окружности. Пользуясь этой формулой, найдите радиус R (в метрах), если угловая скорость равна 7,5 с^-1, а центростремительное ускорение равно 337,5 м/с^2. Ответ дайте в метрах.',
+      options:[6, 4.5, 7.5, 9], answer:6, unit:'м',
+      hint:'R = a / ω^2 = 337,5 / 7,5^2 = 6 м.'
+    },
+    {
+      id:10, type:'slider',
+      title:'Задание 10.',
+      body:'Площадь четырёхугольника можно вычислить по формуле S = d1 d2 sin α / 2, где d1 и d2 – длины диагоналей четырёхугольника, α – угол между диагоналями. Пользуясь этой формулой, найдите длину диагонали d2, если d1 = 12, sin α = 7/9, а S = 46,2.',
+      min:7, max:13, step:0.1, answer:9.9, tol:0.1, unit:'ед.',
+      hint:'S=(d1·d2·sinα)/2 = (12·d2·7/9)/2 ⇒ d2 = 46,2 ÷ (14/3) = 9,9.'
+    }
+  ];
+
+  // ---------- state ----------
+  let idx=0, lives=3;
+  const bar=$('#bar'), card=$('#card'), qTitle=$('#qTitle'), qBody=$('#qBody'), zone=$('#interactive'), hintBox=$('#hintBox');
+
+  const renderHearts=()=>['#h1','#h2','#h3'].forEach((sel,i)=>$(sel).classList.toggle('off', i>=lives));
+  const setProgress=()=>bar.style.width=(idx/tasks.length*100)+'%';
+
+  // ---------- render ----------
+  function renderTask(){
+    setProgress(); renderHearts();
+    const t=tasks[idx];
+    qTitle.textContent=t.title;
+
+    // оригинальный текст как есть (без HTML преобразований)
+    qBody.textContent='';
+    qBody.append(document.createTextNode(t.body));
+
+    hintBox.style.display='none';
+    hintBox.textContent=t.hint||'';
+    zone.innerHTML='';
+
+    if(t.type==='choice'){
+      const wrap=document.createElement('div'); wrap.className='choices';
+      t.options.forEach(v=>{
+        const b=document.createElement('button'); b.type='button'; b.className='chip';
+        b.textContent=`${v}${t.unit?' '+t.unit:''}`;
+        b.addEventListener('click',()=>{
+          $$('.chip',wrap).forEach(x=>x.classList.remove('sel'));
+          b.classList.add('sel'); zone.dataset.val=v;
+        });
+        wrap.appendChild(b);
+      });
+      zone.appendChild(wrap);
+    }
+
+    if(t.type==='input'){
+      const input=document.createElement('input');
+      input.type='text'; input.inputMode='decimal'; input.placeholder=t.placeholder||'Введите число';
+      input.addEventListener('keydown',e=>{ if(e.key==='Enter') check() });
+      zone.appendChild(input);
+    }
+
+    if(t.type==='slider'){
+      const wrap=document.createElement('div'); wrap.className='slider-wrap';
+      const out=document.createElement('div'); out.className='display';
+      const rng=document.createElement('input'); rng.type='range'; rng.min=t.min; rng.max=t.max; rng.step=t.step; rng.value=(t.min+t.max)/2;
+      zone.dataset.val=rng.value; out.textContent=`${rng.value}${t.unit?' '+t.unit:''}`;
+      rng.addEventListener('input',()=>{ zone.dataset.val=rng.value; out.textContent=`${rng.value}${t.unit?' '+t.unit:''}` });
+      wrap.append(out, rng); zone.appendChild(wrap);
+    }
+
+    if(t.type==='drag'){
+      const wrap=document.createElement('div'); wrap.className='drag-area';
+      const drop=document.createElement('div'); drop.className='drop'; drop.textContent='Перетащи/кликни значение сюда';
+      drop.addEventListener('dragover',e=>e.preventDefault());
+      drop.addEventListener('drop',e=>{ e.preventDefault(); const v=e.dataTransfer.getData('text'); zone.dataset.val=v; drop.textContent=v; drop.style.borderColor='var(--accent)'; });
+
+      const tiles=document.createElement('div'); tiles.className='tiles';
+      t.tiles.forEach(v=>{
+        const el=document.createElement('div'); el.className='tile'; el.draggable=true; el.textContent=v;
+        el.addEventListener('dragstart',e=>e.dataTransfer.setData('text/plain', v));
+        el.addEventListener('click',()=>{ zone.dataset.val=v; drop.textContent=v; drop.style.borderColor='var(--accent)'; });
+        tiles.appendChild(el);
+      });
+
+      wrap.append(tiles, drop); zone.appendChild(wrap);
+    }
+
+    if(t.type==='keypad'){
+      const out=document.createElement('div'); out.className='display'; out.textContent='';
+      const k=document.createElement('div'); k.className='kpd'; zone.dataset.val='';
+      const keys=['7','8','9','4','5','6','1','2','3','0','.',',','⌫','C','OK'];
+      keys.forEach(sym=>{
+        const b=document.createElement('div'); b.className='kbtn'; b.textContent=sym;
+        b.addEventListener('click',()=>{
+          let cur=zone.dataset.val||'';
+          if(sym==='C'){ cur=''; }
+          else if(sym==='⌫'){ cur=cur.slice(0,-1); }
+          else if(sym==='OK'){ check(); return; }
+          else { cur+=sym; }
+          zone.dataset.val=cur; out.textContent=cur;
+        });
+        k.appendChild(b);
+      });
+      zone.append(out, k);
+    }
+
+    if(t.type==='stepper'){
+      const out=document.createElement('div'); out.className='display';
+      let v=t.start??0; zone.dataset.val=v; out.textContent=v+(t.unit?' '+t.unit:'');
+      const group=document.createElement('div'); group.className='actions';
+      const minus=document.createElement('button'); minus.className='btn ghost'; minus.textContent='−';
+      const plus=document.createElement('button'); plus.className='btn ghost'; plus.textContent='+';
+      const step=t.step||1; const snap=x=>Math.round(x*1000)/1000;
+      minus.addEventListener('click',()=>{ v=snap(v-step); zone.dataset.val=v; out.textContent=v+(t.unit?' '+t.unit:'') });
+      plus .addEventListener('click',()=>{ v=snap(v+step); zone.dataset.val=v; out.textContent=v+(t.unit?' '+t.unit:'') });
+      group.append(minus, plus); zone.append(out, group);
+    }
+  }
+
+  // ---------- check ----------
+  function check(){
+    const t=tasks[idx];
+    let val=null;
+    if(['choice','slider','drag','keypad','stepper'].includes(t.type)) val=parseNum(zone.dataset.val);
+    if(t.type==='input') val=parseNum($('input',zone).value);
+
+    if(Number.isNaN(val)){ toast('Введи/выбери ответ 😊'); return; }
+
+    const ok=within(val, t.answer, t.tol??0.001);
+    card.classList.remove('ok','bad'); void card.offsetWidth;
+
+    if(ok){
+      card.classList.add('ok'); toast('Верно! Ты умничка ✨'); confetti(); idx++;
+      if(idx>=tasks.length) setTimeout(()=>win(),650); else setTimeout(()=>renderTask(),650);
+    }else{
+      card.classList.add('bad'); lives=Math.max(0, lives-1); renderHearts(); toast('Не совсем… Попробуй ещё!');
+      if(lives===0) setTimeout(()=>gameOver(),550);
+    }
+  }
+
+  // ---------- end states ----------
+  function win(){ $('#overText').innerHTML=`Все <b>${tasks.length}</b> задач решены! 🏆`; $('#gameOver').classList.remove('hidden') }
+  function gameOver(){ $('#overText').innerHTML=`Жизни закончились. Прогресс: <b>${idx}/${tasks.length}</b>.`; $('#gameOver').classList.remove('hidden') }
+  function restart(){ idx=0; lives=3; $('#gameOver').classList.add('hidden'); renderTask(); }
+
+  // ---------- events ----------
+  $('#hintBtn').addEventListener('click',()=>{ const hb=$('#hintBox'); hb.style.display=hb.style.display==='block'?'none':'block' });
+  $('#checkBtn').addEventListener('click',check);
+  $('#againBtn').addEventListener('click',restart);
+
+  // start
+  renderTask();
+</script>
+</body>
+</html>
