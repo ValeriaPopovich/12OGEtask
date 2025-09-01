@@ -33,6 +33,16 @@
       text-decoration:none; box-shadow:var(--shadow); transition:.1s ease transform;
     }
     .sub-btn:hover{transform:scale(1.05)}
+
+    /* Tabs */
+    .tabs{display:flex; gap:8px; flex-wrap:wrap}
+    .tab{
+      border:none; cursor:pointer; font-weight:800; color:#7a243a;
+      padding:10px 14px; border-radius:999px; background:linear-gradient(135deg,#FFE6F0,#FFF);
+      box-shadow:var(--shadow);
+    }
+    .tab.active{background:linear-gradient(135deg,var(--mint),#e9fff8); color:#255a52}
+
     .panel{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:clamp(14px,3vw,22px);display:grid;gap:14px}
     .topbar{display:grid;gap:10px;grid-template-columns:1fr auto;align-items:center}
     .progress{height:14px;background:rgba(255,158,178,.25);border-radius:999px;overflow:hidden}
@@ -67,6 +77,11 @@
     .overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(255,245,247,.85);z-index:40;backdrop-filter:blur(4px);padding:20px}
     .hidden{display:none}
     .footer{text-align:center;opacity:.7;font-size:.9rem}
+
+    /* Intro illustration block */
+    .intro-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;align-items:center}
+    @media (max-width:820px){.intro-grid{grid-template-columns:1fr}}
+    .lead{font-size:clamp(16px,2vw,18px);line-height:1.6}
   </style>
 </head>
 <body>
@@ -76,7 +91,78 @@
     <a class="sub-btn" href="https://t.me/YourChannelHere" target="_blank" rel="noopener">Подписывайся 📲</a>
   </header>
 
-  <section class="panel">
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" data-tab="intro">Введение</button>
+    <button class="tab" data-tab="game">Тренажёр</button>
+  </div>
+
+  <!-- Intro panel -->
+  <section id="intro" class="panel">
+    <div class="intro-grid">
+      <div>
+        <h2 class="q-title">О чём эти задания?</h2>
+        <p class="lead">
+          Здесь идёт самый обычный <b>подсчёт по формулам</b>. Никакую сложную теорию знать не надо —
+          просто <b>подставляешь числа и считаешь</b>. Как на физике, только ещё проще:
+          <b>формулы известны заранее!</b>
+        </p>
+        <p class="lead">
+          Пройди все задачи — и <b>балл по ОГЭ у тебя в кармане!</b> Нажимай «Тренажёр», выбирай ответы,
+          используй подсказки и закрепляй навык.
+        </p>
+        <div class="actions">
+          <button id="startBtn" class="btn">Начать тренировку</button>
+          <a class="btn secondary" href="https://t.me/YourChannelHere" target="_blank" rel="noopener">Подписаться на канал</a>
+        </div>
+      </div>
+
+      <!-- Cute inline SVG illustration -->
+      <div aria-hidden="true">
+        <svg viewBox="0 0 440 300" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#FFE6F0"/>
+              <stop offset="1" stop-color="#E7FFF7"/>
+            </linearGradient>
+            <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#FFB3C5"/>
+              <stop offset="1" stop-color="#FFD6A6"/>
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width="440" height="300" rx="24" fill="url(#g1)"/>
+          <!-- notebook -->
+          <rect x="40" y="40" width="210" height="220" rx="16" fill="#fff" stroke="#f3c0cc" stroke-width="3"/>
+          <line x1="60" y1="80" x2="230" y2="80" stroke="#ffd1db" stroke-width="6" stroke-linecap="round"/>
+          <line x1="60" y1="112" x2="230" y2="112" stroke="#ffd1db" stroke-width="6" stroke-linecap="round"/>
+          <line x1="60" y1="144" x2="230" y2="144" stroke="#ffd1db" stroke-width="6" stroke-linecap="round"/>
+          <line x1="60" y1="176" x2="200" y2="176" stroke="#ffd1db" stroke-width="6" stroke-linecap="round"/>
+          <!-- calculator -->
+          <rect x="270" y="60" width="120" height="180" rx="18" fill="url(#g2)"/>
+          <rect x="285" y="75" width="90" height="36" rx="8" fill="#fff" opacity=".9"/>
+          <g fill="#fff">
+            <rect x="285" y="120" width="26" height="26" rx="6"/>
+            <rect x="317" y="120" width="26" height="26" rx="6"/>
+            <rect x="349" y="120" width="26" height="26" rx="6"/>
+            <rect x="285" y="152" width="26" height="26" rx="6"/>
+            <rect x="317" y="152" width="26" height="26" rx="6"/>
+            <rect x="349" y="152" width="26" height="26" rx="6"/>
+            <rect x="285" y="184" width="26" height="26" rx="6"/>
+            <rect x="317" y="184" width="26" height="26" rx="6"/>
+            <rect x="349" y="184" width="26" height="26" rx="6"/>
+          </g>
+          <!-- formula bubble -->
+          <g>
+            <rect x="120" y="200" width="160" height="60" rx="14" fill="#fff" stroke="#c1efe2" stroke-width="3"/>
+            <text x="200" y="236" text-anchor="middle" font-family="Poppins, Nunito, sans-serif" font-weight="700" font-size="18" fill="#6a2a3e">P = m g h</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Game panel -->
+  <section id="game" class="panel hidden">
     <div class="topbar">
       <div class="progress" aria-label="Прогресс"><i id="bar"></i></div>
       <div class="hearts" aria-label="Жизни"><span id="h1">❤️</span><span id="h2">❤️</span><span id="h3">❤️</span></div>
@@ -116,6 +202,17 @@
 
   const toast = (msg)=>{ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1200) }
   const confetti=()=>{const c=["#FF9EB2","#FFDDB8","#CFF5E7","#B1E3FF","#E6C2FF"];for(let i=0;i<24;i++){const s=document.createElement('span');s.className='confetti';s.style.left=Math.random()*100+'vw';s.style.background=c[(Math.random()*c.length)|0];s.style.animationDuration=(1.2+Math.random()*0.8)+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),1800)}}
+
+  // ---------- tabs ----------
+  const tabBtns = $$('.tab');
+  const panels = { intro: $('#intro'), game: $('#game') };
+  function showTab(name){
+    tabBtns.forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
+    Object.keys(panels).forEach(k=>panels[k].classList.toggle('hidden', k!==name));
+    if(name==='game'){ setTimeout(()=> panels.game.scrollIntoView({behavior:'smooth', block:'start'}), 0); }
+  }
+  tabBtns.forEach(b=> b.addEventListener('click', ()=> showTab(b.dataset.tab)));
+  $('#startBtn').addEventListener('click', ()=> showTab('game'));
 
   // ---------- tasks: оригинальные формулировки ----------
   const tasks = [
@@ -322,8 +419,8 @@
   $('#checkBtn').addEventListener('click',check);
   $('#againBtn').addEventListener('click',restart);
 
-  // start
-  renderTask();
+  // start on Intro; game renders on first show
+  renderTask(); // подготовим игру заранее
 </script>
 </body>
 </html>
